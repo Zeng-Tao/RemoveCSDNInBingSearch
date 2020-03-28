@@ -12,20 +12,20 @@
 
     const log = console.log.bind(console)
 
-    const e = function(sel, parent=document) {
+    const e = function (sel, parent = document) {
         let element = parent.querySelector(sel)
         return element
     }
 
-    const es = function(sel, parent=document) {
+    const es = function (sel, parent = document) {
         let elements = parent.querySelectorAll(sel)
         return elements
     }
 
-    let createButton = function(hasCSDNItem) {
+    let createButton = function (hasCSDNItem) {
         let b = document.createElement('button')
         b.id = 'toggle-csdn-button'
-        b.show= false
+        b.showItems = false
         b.move = false
         b.hasCSDNItem = hasCSDNItem
         if (hasCSDNItem) {
@@ -36,26 +36,26 @@
         // button style
         b.style.cssText = "width: 60px; height: 60px; z-index: 9999; background: #1fe0b7; color: #fff; position: fixed; top: 20%; left: 30px"
         e('body').insertAdjacentElement('beforeEnd', b)
-        
-        b.addEventListener('click', function(event) {
-            // log('click', b.show)
+
+        b.addEventListener('click', function (event) {
+            // log('click', b.showItems)
             if (!b.hasCSDNItem) {
                 return
             }
             toggleCSDNItem(event)
-            if (b.show) {
+            if (b.showItems) {
                 b.innerText = '隐藏CSDN结果'
             } else {
                 b.innerText = '显示CSDN结果'
             }
         })
 
-        b.addEventListener('mousedown', function(event) {
+        b.addEventListener('mousedown', function (event) {
             // log('mousedown')
             b.move = true
         })
 
-        b.addEventListener('mousemove', function(event) {
+        b.addEventListener('mousemove', function (event) {
             // log('mousemove')
             let x = event.clientX - 20
             let y = event.clientY - 20
@@ -67,27 +67,29 @@
             }
         })
 
-        window.addEventListener('mouseup', function(event) {
+        window.addEventListener('mouseup', function (event) {
             // log('mouseup')
             b.move = false
         })
     }
 
-    let toggleCSDNItem = function(event) {
+    let toggleCSDNItem = function (event) {
         let target = event.target
         let items = es('.csdn')
+        if (items.length == 0) {
+            return
+        }
+        target.showItems = !target.showItems
         for (let item of items) {
             if (item.hidden) {
                 item.hidden = false
-                target.show = true
             } else {
                 item.hidden = true
-                target.show = false
             }
         }
     }
 
-    let main = function() {
+    let main = function () {
         // log('start')
         let items = es('#b_results .b_algo')
         let hasCSDNItem = false
