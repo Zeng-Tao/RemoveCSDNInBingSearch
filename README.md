@@ -1,4 +1,3 @@
-# [RemoveCSDNInBingSearch](https://github.com/Zeng-Tao/RemoveCSDNInBingSearch)
  Bing/Google 搜索中隐藏 CSDN 结果
 
 
