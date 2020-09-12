@@ -1,11 +1,11 @@
 // ==UserScript==
-// @icon            https://cn.bing.com/sa/simg/bing_p_rr_teal_min.ico
-// @name            Bing 搜索结果去除 CSDN
+// @name            搜索中隐藏 CSDN 结果
 // @namespace       [url=https://github.com/zeng-Tao/]https://github.com/zeng-Tao/[/url]
 // @author          enough
-// @description     Bing 搜索结果去除 CSDN
+// @description     Bing/Google 搜索中隐藏 CSDN 结果
 // @match           *://*.bing.com/search?q=*
-// @version         0.1
+// @match           *://*.google.com/search?*
+// @version         0.2
 // ==/UserScript==
 (function () {
     'use strict'
@@ -89,8 +89,7 @@
         }
     }
 
-    let main = function () {
-        // log('start')
+    let _onBingSearch = function () {
         let items = es('#b_results .b_algo')
         let hasCSDNItem = false
         for (let item of items) {
@@ -104,6 +103,42 @@
                 hasCSDNItem = true
             }
         }
+        return hasCSDNItem
+    }
+
+    let _onGoogleSearch = function () {
+        log('on goole search')
+        let items = es('.g')
+        let hasCSDNItem = false
+        for (let item of items) {
+            let cite = e('a', item)
+            let src = cite.href
+            if (src.includes('csdn')) {
+                // cite.style.background = 'red'
+                item.style.border = 'solid 3px red'
+                item.classList.add('csdn')
+                item.hidden = true
+                hasCSDNItem = true
+            }
+        }
+        return hasCSDNItem
+
+    }
+
+    let search = function () {
+        let host = location.host.split('.')[1]
+        let d = {
+            'google': _onGoogleSearch,
+            'bing': _onBingSearch,
+        }
+
+        let hasCSDNItem = d[host]()
+        return hasCSDNItem
+    }
+
+
+    let main = function () {
+        let hasCSDNItem = search()
         createButton(hasCSDNItem)
     }
 
